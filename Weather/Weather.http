@@ -1,0 +1,6 @@
+@Weather_HostAddress = http://localhost:5296
+
+GET {{Weather_HostAddress}}/endpoint/?port=1234
+Accept: application/json
+
+###

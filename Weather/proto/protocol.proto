@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+option csharp_namespace = "Weather";
+
+message WeatherItemResponce
+{
+  double temp = 1;
+}
+
+message WeatherItemRequest
+{
+  string city = 2;
+}
+
+service WeatherService{
+  rpc Ping(WeatherItemRequest) returns (WeatherItemResponce);
+}
