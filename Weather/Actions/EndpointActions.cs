@@ -5,7 +5,7 @@ namespace Weather.Actions;
 
 public class EndpointActions
 {
-    public static IResult NewServer(
+    public static IResult NewEndpoint(
         EndpointCreationService ecService,
         EndpointStateService stateService,
         EndpointCacheService cacheService, [FromQuery] int port)
@@ -13,7 +13,7 @@ public class EndpointActions
         if (cacheService.GetServer(port) is { })
             Results.Problem("Already allocated endpoint");
         
-        var endpoint = ecService.BuildServer(port);
+        var endpoint = ecService.CreateEndpoint(port);
         cacheService.AddServer(port, endpoint);
         stateService.AddEndpoint(port, EndpointState.Created);
         
@@ -21,7 +21,7 @@ public class EndpointActions
         return Results.Ok($"Endpoint allocated {port}");
     }
 
-    public static async Task<IResult> StartServer(
+    public static async Task<IResult> RunEndpoint(
         EndpointCacheService cache,
         EndpointStateService stateService,
         EndpointCreationService ecService,
@@ -32,6 +32,7 @@ public class EndpointActions
         if (stateService.GetState(port) is EndpointState.Stopped or EndpointState.Failed)
         {
             logger.LogInformation($"Restarting server on port {port}");
+            
             var removed = cache.RemoveServer(port);
             if (removed is { })
             {
@@ -42,7 +43,7 @@ public class EndpointActions
                 catch (Exception e) { }
             }
          
-            var endpoint = ecService.BuildServer(port);
+            var endpoint = ecService.CreateEndpoint(port);
             cache.AddServer(port, endpoint);
             endpoint.Start();
             logger.LogInformation($"Server started on port {port}");
@@ -61,17 +62,18 @@ public class EndpointActions
         }
         else
         {
+            logger.LogError("StartServer failed");
             return Results.Problem("Server not found.");
         }
     }
 
-    public static IResult ListServers(EndpointCacheService cache, EndpointStateService stateService)
+    public static IResult ListEndpoints(EndpointCacheService cache, EndpointStateService stateService)
     {
         var lst = cache.GetServers().Select(port=> $"{port} is {stateService.GetState(port)}").ToList();
-        return Results.Content(string.Join("\n",lst));
+        return Results.Content(string.Join("\n", lst));
     }
 
-    public static async Task<IResult> StopServer(
+    public static async Task<IResult> StopEndpoint(
         EndpointCacheService cache,
         EndpointStateService stateService,
         ILogger<EndpointActions> logger, [FromQuery] int port)

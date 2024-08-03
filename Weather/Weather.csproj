@@ -21,4 +21,8 @@
         <Protobuf Include="proto\protocol.proto" GrpcServices="Server" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DAL\" />
+    </ItemGroup>
+
 </Project>

@@ -8,3 +8,5 @@ public enum EndpointState
     Failed = 3,
     Created = 4
 }
+
+public record MachineIdentifier(string MachineName, string MachineId);
