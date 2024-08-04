@@ -3,7 +3,7 @@ using Weather.Endpoint;
 
 namespace Weather.Actions;
 
-public class EndpointActions
+internal class EndpointActions
 {
     public static IResult NewEndpoint(
         EndpointCreationService ecService,

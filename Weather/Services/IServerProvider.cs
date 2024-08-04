@@ -10,20 +10,20 @@ internal interface IServerProvider
 internal sealed class ServerItem
 {
     private readonly EndpointCreationService _ecService;
-    private readonly ServerSetting _settings;
+    private readonly ServerSettings _settingses;
     private IServerChannel<Server>? _channel;
 
     //IChannel<WeatherItem> item;
     public ServerItem(EndpointCreationService ecService,
-        ServerSetting settings)
+        ServerSettings settingses)
     {
         _ecService = ecService;
-        _settings = settings;
+        _settingses = settingses;
     }
 
     public void Start()
     {
-        _channel = _ecService.CreateEndpoint(_settings.Port);
+        _channel = _ecService.CreateEndpoint(_settingses.Port);
     }
 
     public async Task Stop()
@@ -31,7 +31,7 @@ internal sealed class ServerItem
         await _channel?.StopAsync();
     }
 
-    public void Update(ServerSetting settings)
+    public void Update(ServerSettings settingses)
     {
     }
 
